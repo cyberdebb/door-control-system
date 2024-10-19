@@ -1,4 +1,5 @@
 const {MongoClient} = require('mongodb');
+const fs = require('fs').promises;
 
 var db, teachers, doors;
 
@@ -15,7 +16,7 @@ async function conecta() {
   return {db, teachers, doors};
 }
 
-async function portasDisponiveis(professorID){
+async function portasDisponiveis(idUFSC){
   if(!teachers){
     throw new Error("A conexão com o banco não foi inicializada.");
   }
@@ -25,7 +26,7 @@ async function portasDisponiveis(professorID){
   if(professor){
     return professor.portasDisponiveis;
   } else{
-    throw new Error(`Professor com ID ${professorIDUFSC} não encontrado!`);
+    throw new Error(`Professor com ID ${idUFSC} não encontrado!`);
   }
 }
 
@@ -33,7 +34,7 @@ async function portasDisponiveis(professorID){
 async function populaProfessores() {
   try {
     // Lê o arquivo JSON contendo os professores
-    const data = await fs.readFile('professores.json', 'utf8');
+    const data = await fs.readFile('./src/models/professores.json', 'utf8');
     const professores = JSON.parse(data);
 
     // Insere os professores no banco de dados
@@ -45,8 +46,7 @@ async function populaProfessores() {
 }
 
 
-module.exports
-{
+module.exports = {
   conecta,
-  portasDisponiveis;
-}
+  portasDisponiveis
+};
